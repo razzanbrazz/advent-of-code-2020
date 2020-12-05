@@ -7,7 +7,7 @@ const calc = (input, matchingRows) => {
     inputArr.forEach(b => {
       const _b = parseFloat(b);
       if(matchingRows === 2) {
-        if (_a + _b == 2020) {
+        if (_a + _b === 2020) {
           val = _a * _b;
           return;
         }
@@ -15,7 +15,7 @@ const calc = (input, matchingRows) => {
       else {
         inputArr.forEach(c => {
           const _c = parseFloat(c);
-          if (_a + _b + _c == 2020) {
+          if (_a + _b + _c === 2020) {
             val = _a * _b * _c;
             return;
           }
