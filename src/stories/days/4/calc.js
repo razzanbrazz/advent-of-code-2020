@@ -27,10 +27,10 @@ const buildObjects = (input) => {
   return objects;
 }
 
+const mandatoryProperties = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+
 export const calcExistingProps = (input) => {
   const objects = buildObjects(input);
-
-  const mandatoryProperties = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
   let val = 0;
 
   objects.forEach(row => {
@@ -64,10 +64,22 @@ export const calcExistingProps = (input) => {
 const validateByr = val => parseInt(val) >= 1920 && parseInt(val) <= 2002;
 const validateIyr = val => parseInt(val) >= 2010 && parseInt(val) <= 2020;
 const validateEyr = val => parseInt(val) >= 2020 && parseInt(val) <= 2030;
-const validateHgt = val => false;
-const validateHcl = val => false;
-const validateEcl = val => false;
-const validatePid = val => false;
+const validateHgt = (val) => {
+  const regex = RegExp('^1[5-8][0-9]cm|19[0-3]cm|59in|6[0-9]in|7[0-6]in$');
+  return regex.test(val);
+};
+const validateHcl = val => {
+  const regex = RegExp('^#[0-9a-fA-F]{6}$');
+  return regex.test(val);
+};
+const validateEcl = val => {
+  const allowedEcl = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'];
+  return allowedEcl.includes(val);
+};
+const validatePid = val => {
+  const regex = RegExp('^[0-9]{9}$');
+  return regex.test(val);
+};
 
 export const calcValidatedProps = (input) => {
   const objects = buildObjects(input);
@@ -78,16 +90,48 @@ export const calcValidatedProps = (input) => {
 
     const keys = Object.keys(row);
 
+    mandatoryProperties.forEach(prop => {
+      if (!row[prop]) {
+        valid = false;
+      }
+    });
+
     keys.forEach(key => {
       switch (key) {
         case 'byr':
           valid = valid && validateByr(row[key]);
           break;
       
+        case 'iyr':
+          valid = valid && validateIyr(row[key]);
+          break;
+    
+        case 'eyr':
+          valid = valid && validateEyr(row[key]);
+          break;
+      
+        case 'hgt':
+          valid = valid && validateHgt(row[key]);
+          break;
+      
+        case 'hcl':
+          valid = valid && validateHcl(row[key]);
+          break;
+      
+        case 'ecl':
+          valid = valid && validateEcl(row[key]);
+          break;
+      
+        case 'pid':
+          valid = valid && validatePid(row[key]);
+          break;
+
         default:
           break;
       }
-    })
+    });
+
+    console.log(valid);
     
     if(valid) {
       val++;
